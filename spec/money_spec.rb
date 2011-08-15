@@ -255,6 +255,13 @@ describe "Money" do
       moneys[2].cents.should == 33
     end
     
+    specify "#allocate can handle large splits made of very tiny percentages" do
+      splits = []
+      1.upto(100) { |i| splits << i.to_f }
+      splits.map! { |split| BigDecimal.new(split.to_s) / 5050 }
+      lambda { Money.new(100).allocate(splits) }.should_not raise_error(ArgumentError)
+    end
+    
     specify "#allocate requires total to be less then 1" do
       lambda { Money.new(0.05).allocate([0.5,0.6]) }.should raise_error(ArgumentError)
     end

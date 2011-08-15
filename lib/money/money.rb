@@ -127,8 +127,8 @@ class Money
   #   Money.new(5, "USD").allocate([0.3,0.7)) #=> [Money.new(2), Money.new(3)]  
   #   Money.new(100, "USD").allocate([0.33,0.33,0.33]) #=> [Money.new(34), Money.new(33), Money.new(33)]
   def allocate(splits)
-    allocations = splits.inject(0.0) {|sum, i| sum += i }
-    raise ArgumentError, "splits add to more then 100%" if allocations > 1.0
+    allocations = (splits.inject(BigDecimal.new("0")) {|sum, i| sum += i }).to_f
+    raise ArgumentError, "splits add to more than 100%" if (allocations - 1.0) > Float::EPSILON
 
     left_over = cents
  
